@@ -35,23 +35,22 @@ function authenticateLogin(account, config) {
       console.log(`Logged in as ${account.user.username}`);
       await client.setPersona(SteamUser.EPersonaState.Online);
       await client.gamesPlayed(config.games);
-      console.log(`Hourboosting started successfully for account ${account.user.username}`);
+      console.log(`Started successfully boosting hours for account ${account.user.username}\n`);
       isSuccess = true;
       resolve(isSuccess);
     });
 
     client.on("error", async (err) => {
-      console.error(`Error on account ${account.user.username}: ${err.message}`);
-      if (err.message.includes("RateLimitExceeded")) {
-        console.log(`Rate limit exceeded for account ${account.user.username}. Skipping to the next account.`);
+      if (err.message.includes("RateLimitExceeded") || err.message.includes("AccountLoginDeniedThrottle")) {
+        console.log(`Rate limit exceeded for account ${account.user.username}. Skipping to the next account.\n`);
       } else {
-        console.error(`Failed to log in to account ${account.user.username}: ${err.message}`);
+        console.error(`Failed to log in to account ${account.user.username}: ${err.message}\n`);
       }
       resolve(isSuccess);
     });
 
     client.on("disconnected", () => {
-      console.log(`Disconnected from account ${account.user.username}`);
+      console.log(`Disconnected from account ${account.user.username}\n`);
     });
   });
 }
